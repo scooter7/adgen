@@ -61,7 +61,9 @@ def generate_ad_content(page_content, description, business_type, channels):
         ],
         max_tokens=500
     )
-    return completion['choices'][0]['message']['content']
+    
+    # Correct way to extract content
+    return completion.choices[0].message.content
 
 # Submit button
 if st.button("Generate Ads"):
