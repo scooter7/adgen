@@ -1,11 +1,10 @@
 import streamlit as st
 import openai
 import requests
-import json
+from bs4 import BeautifulSoup
 
 # Load secrets
 openai.api_key = st.secrets["openai"]["api_key"]
-serp_api_key = st.secrets["serpapi"]["api_key"]
 
 # App title and introduction
 st.title("Ad Creator for Online Platforms")
@@ -27,14 +26,20 @@ business_type = st.selectbox(
     ["E-commerce", "Services (Education, Consulting, Professional Services)", "Local Business", "Technology (Software, etc.)"]
 )
 
-# Function to get data from SerpAPI
+# Function to scrape page content using BeautifulSoup
 def get_page_content(url):
-    serpapi_url = f"https://serpapi.com/search.json?api_key={serp_api_key}&url={url}"
-    response = requests.get(serpapi_url)
-    if response.status_code == 200:
-        return response.json().get('content')
-    else:
-        st.error("Failed to retrieve page content")
+    try:
+        response = requests.get(url)
+        if response.status_code == 200:
+            soup = BeautifulSoup(response.text, "lxml")
+            # Get visible text content of the page
+            page_content = ' '.join([p.get_text() for p in soup.find_all('p')])
+            return page_content
+        else:
+            st.error(f"Failed to retrieve page content. HTTP Status Code: {response.status_code}")
+            return None
+    except Exception as e:
+        st.error(f"An error occurred: {e}")
         return None
 
 # Function to generate ads with OpenAI
