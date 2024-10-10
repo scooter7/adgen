@@ -1,3 +1,5 @@
 streamlit
-openai
+openai=
 requests
+beautifulsoup4
+lxml
