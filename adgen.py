@@ -4,7 +4,7 @@ import requests
 from bs4 import BeautifulSoup
 
 # Load secrets
-openai.api_key = st.secrets["openai"]["api_key"]
+api_key = st.secrets["openai"]["api_key"]
 
 # App title and introduction
 st.title("Ad Creator for Online Platforms")
@@ -51,7 +51,7 @@ def generate_ad_content(page_content, description, business_type, channels):
     Provide best practices and keyword recommendations for each selected platform.
     """
     
-    client = openai.Client()  # Initialize the OpenAI client
+    client = openai.Client(api_key=api_key)  # Initialize the OpenAI client with API key
     
     completion = client.chat.completions.create(
         model="gpt-4o-mini",
