@@ -42,7 +42,7 @@ def get_page_content(url):
         st.error(f"An error occurred: {e}")
         return None
 
-# Function to generate ads with OpenAI
+# Function to generate ads with GPT-4o-mini
 def generate_ad_content(page_content, description, business_type, channels):
     prompt = f"""
     Create online ads for the following business type: {business_type}.
@@ -50,15 +50,18 @@ def generate_ad_content(page_content, description, business_type, channels):
     Platforms: {', '.join(channels)}.
     Provide best practices and keyword recommendations for each selected platform.
     """
-    response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
+    
+    client = openai.Client()  # Initialize the OpenAI client
+    
+    completion = client.chat.completions.create(
+        model="gpt-4o-mini",
         messages=[
             {"role": "system", "content": "You are an expert at generating online ad content for different platforms."},
             {"role": "user", "content": prompt}
         ],
         max_tokens=500
     )
-    return response['choices'][0]['message']['content']
+    return completion['choices'][0]['message']['content']
 
 # Submit button
 if st.button("Generate Ads"):
